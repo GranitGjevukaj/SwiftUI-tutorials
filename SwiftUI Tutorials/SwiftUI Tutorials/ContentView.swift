@@ -31,33 +31,37 @@ struct ContentView: View {
 
     // MARK: Body
     var body: some View {
-        VStack {
+        NavigationView {
+            VStack {
 
-            // Color View
-            HStack {
-                VStack {
-                    Color(red: rTarget, green: gTarget, blue: bTarget)
-                    Text("Match this color:")
+                // Color View
+                HStack {
+                    VStack {
+                        Color(red: rTarget, green: gTarget, blue: bTarget)
+                        Text("Match this color:")
+                    }
+                    VStack {
+                        Color(red: rGuess, green: gGuess, blue: bGuess)
+                        Text("R: \(Int(rGuess * 255.0))"
+                            + "  G: \(Int(gGuess * 255.0))"
+                            + "  B: \(Int(bGuess * 255.0))")
+                    }
                 }
+
+                // Hit me Button
+                Button(action: {self.showAlert = true}) {
+                    Text("Hit me!")
+                }.alert(isPresented: $showAlert) { () -> Alert in
+                    Alert(title: Text("Your Score"), message: Text(String(computeScore())))
+                }.padding()
+
+                // Sliders
                 VStack {
-                    Color(red: rGuess, green: gGuess, blue: bGuess)
-                    Text("R: \(Int(rGuess * 255.0))"
-                        + "  G: \(Int(gGuess * 255.0))"
-                        + "  B: \(Int(bGuess * 255.0))")
-                }
+                    ColorSlider(value: $rGuess, textColor: .red)
+                    ColorSlider(value: $gGuess, textColor: .green)
+                    ColorSlider(value: $bGuess, textColor: .blue)
+                }.padding(.horizontal)
             }
-
-            // Hit me Button
-            Button(action: {self.showAlert = true}) {
-                Text("Hit me!")
-            }.alert(isPresented: $showAlert) { () -> Alert in
-                Alert(title: Text("Your Score"), message: Text(String(computeScore())))
-            }.padding()
-
-            // Sliders
-            ColorSlider(value: $rGuess, textColor: .red)
-            ColorSlider(value: $gGuess, textColor: .green)
-            ColorSlider(value: $bGuess, textColor: .blue)
         }
     }
 }
@@ -71,14 +75,17 @@ struct ColorSlider: View {
         HStack {
             Text("0").foregroundColor(textColor)
             Slider(value: $value)
+                .background(textColor)
+                .cornerRadius(10)
             Text("255").foregroundColor(textColor)
-        }.padding(.horizontal)
+        }
     }
 }
 
 // MARK: Preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(rGuess: 0.5, gGuess: 0.5, bGuess: 0.5).previewLayout(.fixed(width: 568, height: 320))
+        ContentView(rGuess: 0.5, gGuess: 0.5, bGuess: 0.5)
+            .previewLayout(.fixed(width: 568, height: 320))
     }
 }
